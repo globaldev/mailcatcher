@@ -19,10 +19,36 @@ class MailCatcher::DeliveryService
     self.class
   end
 
-  def deliver!(recipient = config.recipient)
-    smtp = Net::SMTP.new config.address, config.port
-    smtp.start() do |smtp| 
-      smtp.send_message message['source'], config.user_name, recipient || message['recipients']
+  def deliver!(recipient = config.recipient, via = :localhost)
+    config = delivery_config(via)
+    smtp = Net::SMTP.new(config[:address], config[:port])
+
+    puts "==> Opening connection to: #{config}"
+
+    smtp.start do |client|
+      client.send_message(
+        message['source'],
+        config.user_name,
+        recipient || message['recipients']
+      )
+    end
+  end
+
+  private
+
+  def delivery_config(via = :localhost)
+    localhost_config = { address: "127.0.0.1", port: 1025 }
+    env_config = { address: config.address, port: config.port }
+
+    return localhost_config if config.address.nil? || config.port.nil?
+
+    case via
+    when :localhost
+      localhost_config
+    when :dyn
+      env_config
+    else
+      localhost_config
     end
   end
 

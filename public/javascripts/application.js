@@ -95,7 +95,30 @@
           deliver_html = $deliver.html();
           $deliver.text('Delivering...');
           return $.ajax({
-            url: "/messages/" + id + "/" + recipient + "/deliver",
+            url: "/messages/" + id + "/" + recipient + "/deliver?via=localhost",
+            type: 'POST',
+            success: function() {
+              $deliver.html(deliver_html);
+              return alert('Message successfully delivered');
+            },
+            error: function() {
+              $deliver.html(deliver_html);
+              return alert('An error occurred while attempting to deliver this message');
+            }
+          });
+        }
+      });
+      $('#message .views .deliver-dyn a').live('click', function(e) {
+        var $deliver, deliver_html, id, recipient;
+        recipient = prompt("Please enter recipient email address");
+        if (recipient) {
+          e.preventDefault();
+          id = _this.selectedMessage() || 1;
+          $deliver = $(this).parent();
+          deliver_html = $deliver.html();
+          $deliver.text('Delivering...');
+          return $.ajax({
+            url: "/messages/" + id + "/" + recipient + "/deliver?via=dyn",
             type: 'POST',
             success: function() {
               $deliver.html(deliver_html);

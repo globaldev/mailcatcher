@@ -37,7 +37,7 @@ class MailCatcher::DeliveryService
   private
 
   def delivery_config(via = :localhost)
-    localhost_config = { address: "127.0.0.1", port: 1025 }
+    localhost_config = { address: "127.0.0.1", port: 25 }
     env_config = { address: config.address, port: config.port }
 
     return localhost_config if config.address.nil? || config.port.nil?

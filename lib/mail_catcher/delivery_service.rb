@@ -20,10 +20,10 @@ class MailCatcher::DeliveryService
   end
 
   def deliver!(recipient = config.recipient, via = :localhost)
-    config = delivery_config(via)
-    smtp = Net::SMTP.new(config[:address], config[:port])
+    config_hash = delivery_config(via)
+    smtp = Net::SMTP.new(config_hash[:address], config_hash[:port])
 
-    puts "==> Opening connection to: #{config}"
+    puts "==> Opening connection to: #{config_hash}"
 
     smtp.start do |client|
       client.send_message(

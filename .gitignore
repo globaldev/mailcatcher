@@ -3,3 +3,5 @@ rdoc
 
 .env
 .sass-cache
+.DS_Store
+.bundle/*

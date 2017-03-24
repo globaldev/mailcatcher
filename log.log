@@ -1,0 +1,16 @@
+Starting MailCatcher
+==> smtp://127.0.0.1:1025
+>> Thin web server (v1.5.1 codename Straight Razor)
+>> Debugging ON
+>> Maximum connections set to 1024
+>> Listening on 127.0.0.1:1080, CTRL+C to stop
+==> http://127.0.0.1:1080
+*** MailCatcher now runs as a daemon by default. Go to the web interface to quit.
+Starting MailCatcher
+==> smtp://127.0.0.1:1025
+>> Thin web server (v1.5.1 codename Straight Razor)
+>> Debugging ON
+>> Maximum connections set to 1024
+>> Listening on 127.0.0.1:1080, CTRL+C to stop
+==> http://127.0.0.1:1080
+*** MailCatcher now runs as a daemon by default. Go to the web interface to quit.

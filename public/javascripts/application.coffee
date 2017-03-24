@@ -59,22 +59,10 @@ class MailCatcher
             alert 'Error while quitting.'
 
     $('#message .views .deliver a').live 'click', (e) ->
-      recipient = prompt "Please enter recipient email address"
-      if recipient
-        e.preventDefault()
-        id = _this.selectedMessage() || 1
-        $deliver = $(this).parent()
-        deliver_html = $deliver.html()
-        $deliver.text 'Delivering...'
-        $.ajax
-          url: "/messages/#{id}/#{recipient}/deliver",
-          type: 'POST',
-          success: ->
-            $deliver.html deliver_html
-            alert 'Message successfully delivered'
-          error: ->
-            $deliver.html deliver_html
-            alert 'An error occurred while attempting to deliver this message'
+      _this.forwardDelivery('localhost', e)
+
+    $('#message .views .deliver-dyn a').live 'click', (e) ->
+      _this.forwardDelivery('dyn', e)
 
     key 'up', =>
       id = @selectedMessage() || 1
@@ -100,6 +88,24 @@ class MailCatcher
 
     @refresh()
     @subscribe()
+
+  forwardDelivery: (via, e) =>
+    recipient = prompt "Please enter recipient email address"
+    if recipient
+      e.preventDefault()
+      id = this.selectedMessage() || 1
+      $deliver = $(this).parent()
+      deliver_html = $deliver.html()
+      $deliver.text 'Delivering via ' + via + '...'
+      $.ajax
+        url: "/messages/#{id}/#{recipient}/deliver?via=" + via,
+        type: 'POST',
+        success: (data, status, xhr) ->
+          $deliver.html deliver_html
+          alert "Yay!\n\n" + data.responseText
+        error: (data, status, xhr) ->
+          $deliver.html deliver_html
+          alert 'An error occurred while attempting to deliver this message:\n\n' + data.responseText
 
   # Only here because Safari's Date parsing *sucks*
   # We throw away the timezone, but you could use it for something...

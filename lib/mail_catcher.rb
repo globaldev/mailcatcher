@@ -162,7 +162,12 @@ module MailCatcher extend self
 
     puts "Starting MailCatcher"
 
-    Thin::Logging.silent = true
+    debugging_enabled = ENV.fetch("DEBUGGING", "false")
+    if debugging_enabled == "true"
+      Thin::Logging.debug = true
+    else
+      Thin::Logging.silent = true
+    end
 
     # One EventMachine loop...
     EventMachine.run do

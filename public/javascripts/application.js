@@ -14,6 +14,7 @@
       this.openTab = __bind(this.openTab, this);
       this.selectedTab = __bind(this.selectedTab, this);
       this.getTab = __bind(this.getTab, this);
+      this.forwardDelivery = __bind(this.forwardDelivery, this);
       var _this = this;
       $('#messages tr').live('click', function(e) {
         e.preventDefault();
@@ -86,50 +87,10 @@
         }
       });
       $('#message .views .deliver a').live('click', function(e) {
-        var $deliver, deliver_html, id, recipient;
-        recipient = prompt("Please enter recipient email address");
-        if (recipient) {
-          e.preventDefault();
-          id = _this.selectedMessage() || 1;
-          $deliver = $(this).parent();
-          deliver_html = $deliver.html();
-          $deliver.text('Delivering...');
-          return $.ajax({
-            url: "/messages/" + id + "/" + recipient + "/deliver?via=localhost",
-            type: 'POST',
-            success: function() {
-              $deliver.html(deliver_html);
-              return alert('Message successfully delivered');
-            },
-            error: function() {
-              $deliver.html(deliver_html);
-              return alert('An error occurred while attempting to deliver this message');
-            }
-          });
-        }
+        return _this.forwardDelivery('localhost', e);
       });
       $('#message .views .deliver-dyn a').live('click', function(e) {
-        var $deliver, deliver_html, id, recipient;
-        recipient = prompt("Please enter recipient email address");
-        if (recipient) {
-          e.preventDefault();
-          id = _this.selectedMessage() || 1;
-          $deliver = $(this).parent();
-          deliver_html = $deliver.html();
-          $deliver.text('Delivering...');
-          return $.ajax({
-            url: "/messages/" + id + "/" + recipient + "/deliver?via=dyn",
-            type: 'POST',
-            success: function() {
-              $deliver.html(deliver_html);
-              return alert('Message successfully delivered');
-            },
-            error: function() {
-              $deliver.html(deliver_html);
-              return alert('An error occurred while attempting to deliver this message');
-            }
-          });
-        }
+        return _this.forwardDelivery('dyn', e);
       });
       key('up', function() {
         var id;
@@ -162,6 +123,30 @@
       this.refresh();
       this.subscribe();
     }
+
+    MailCatcher.prototype.forwardDelivery = function(via, e) {
+      var $deliver, deliver_html, id, recipient;
+      recipient = prompt("Please enter recipient email address");
+      if (recipient) {
+        e.preventDefault();
+        id = this.selectedMessage() || 1;
+        $deliver = $(this).parent();
+        deliver_html = $deliver.html();
+        $deliver.text('Delivering via ' + via + '...');
+        return $.ajax({
+          url: ("/messages/" + id + "/" + recipient + "/deliver?via=") + via,
+          type: 'POST',
+          success: function(data, status, xhr) {
+            $deliver.html(deliver_html);
+            return alert("Yay!\n\n" + data.responseText);
+          },
+          error: function(data, status, xhr) {
+            $deliver.html(deliver_html);
+            return alert('An error occurred while attempting to deliver this message:\n\n' + data.responseText);
+          }
+        });
+      }
+    };
 
     MailCatcher.prototype.parseDateRegexp = /^(\d{4})[-\/\\](\d{2})[-\/\\](\d{2})(?:\s+|T)(\d{2})[:-](\d{2})[:-](\d{2})(?:([ +-]\d{2}:\d{2}|\s*\S+|Z?))?$/;
 

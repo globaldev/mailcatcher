@@ -146,7 +146,7 @@ class MailCatcher::Web < Sinatra::Base
       rescue => e
         halt 500, e.inspect
       end
-      "" # Return 200 with an empty body
+      "Message sent successfully via #{via}" # Return 200 with an empty body
     else
       not_found
     end

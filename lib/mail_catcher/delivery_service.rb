@@ -21,14 +21,19 @@ class MailCatcher::DeliveryService
 
   def deliver!(recipient = config.recipient, via = :localhost)
     config_hash = delivery_config(via)
-    smtp = Net::SMTP.new(config_hash[:address], config_hash[:port])
 
     puts "==> Opening connection to: #{config_hash}"
 
-    smtp.start do |client|
+    Net::SMTP.start(
+      config_hash[:address],
+      config_hash[:port],
+      config_hash[:username],
+      config_hash[:password],
+      :plain) do |client|
+
       client.send_message(
         message['source'],
-        config.user_name,
+        config.email,
         recipient || message['recipients']
       )
     end
@@ -37,11 +42,6 @@ class MailCatcher::DeliveryService
   private
 
   def delivery_config(via = :localhost)
-    localhost_config = { address: "127.0.0.1", port: 25 }
-    env_config = { address: config.address, port: config.port }
-
-    return localhost_config if config.address.nil? || config.port.nil?
-
     case via
     when :localhost
       localhost_config
@@ -50,6 +50,24 @@ class MailCatcher::DeliveryService
     else
       localhost_config
     end
+  end
+
+  def localhost_config
+    {
+      address: "127.0.0.1",
+      port: 25,
+      username: "",
+      password: ""
+    }
+  end
+
+  def env_config
+    {
+      address: config.address,
+      port: config.port,
+      username: config.user_name,
+      password: config.password
+    }
   end
 
   class << self

@@ -32,6 +32,7 @@ GEM
       dotenv-deployment (~> 0.0.2)
     dotenv-deployment (0.0.2)
     eventmachine (1.0.3)
+    eventmachine (1.0.3-x86-mingw32)
     execjs (2.0.2)
     fssm (0.2.10)
     haml (3.1.8)
@@ -44,7 +45,7 @@ GEM
     rack (1.6.0)
     rack-protection (1.5.3)
       rack
-    rake (10.1.0)
+    rake (13.0.1)
     rdoc (4.0.1)
       json (~> 1.4)
     sass (3.2.12)
